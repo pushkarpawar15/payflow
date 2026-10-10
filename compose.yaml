@@ -1,0 +1,36 @@
+services:
+  api:
+    build:
+      context: ./backend
+    environment:
+      PAYFLOW_STORAGE_BACKEND: ${PAYFLOW_STORAGE_BACKEND:-memory}
+      PAYFLOW_SEED_DATA: ${PAYFLOW_SEED_DATA:-true}
+      PAYFLOW_CORS_ORIGINS: ${PAYFLOW_CORS_ORIGINS:-localhost}
+      PAYFLOW_LOG_LEVEL: ${PAYFLOW_LOG_LEVEL:-INFO}
+      GOOGLE_CLOUD_PROJECT: ${GOOGLE_CLOUD_PROJECT:-}
+      FIRESTORE_DATABASE: ${FIRESTORE_DATABASE:-(default)}
+    expose:
+      - "8080"
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - "from urllib.request import urlopen; urlopen('http://127.0.0.1:8080/health', timeout=3)"
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  web:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL:-}
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
