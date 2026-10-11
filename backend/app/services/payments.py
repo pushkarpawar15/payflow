@@ -3,7 +3,7 @@ from datetime import datetime
 from uuid import uuid4
 
 from app.exceptions import DuplicatePaymentError, PaymentNotFoundError
-from app.models import Payment, PaymentCreate, PaymentStatus
+from app.models import Payment, PaymentCreate, PaymentStatus, normalize_customer
 from app.repositories.base import PaymentRepository
 from app.time import UTC
 
@@ -44,9 +44,7 @@ class PaymentService:
     async def list_payments(
         self, status: PaymentStatus | None = None, customer: str | None = None
     ) -> list[Payment]:
-        normalized_customer = (
-            PaymentCreate(customer=customer, amount="1.00").customer if customer else None
-        )
+        normalized_customer = normalize_customer(customer) if customer is not None else None
         return await self.repository.list_payments(status=status, customer=normalized_customer)
 
     async def get(self, payment_id: str) -> Payment:

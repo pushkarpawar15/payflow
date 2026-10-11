@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import re
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
 from enum import Enum
@@ -25,9 +24,11 @@ class Currency(str, Enum):
 
 
 def normalize_customer(value: str) -> str:
-    normalized = value.strip().upper()
-    if len(normalized) > 64 or not re.fullmatch(r"CUST-[A-Z0-9]+(?:-[A-Z0-9]+)*", normalized):
-        raise ValueError("Invalid fictional customer ID")
+    if not isinstance(value, str):
+        raise ValueError("Customer must be text")
+    normalized = value.strip()
+    if not normalized:
+        raise ValueError("Customer ID is required")
     return normalized
 
 

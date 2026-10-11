@@ -19,21 +19,24 @@ async def test_health_list_create_details_and_no_future_routes() -> None:
         }
         seeded = await client.get("/payments")
         assert seeded.status_code == 200 and len(seeded.json()) == 18
-        created = await client.post("/payments", json={"customer": "cust-011", "amount": "499.000"})
+        created = await client.post(
+            "/payments",
+            json={"customer": "any-customer-id-999!", "amount": "499.000"},
+        )
         assert created.status_code == 201
         record = created.json()
-        assert record["customer"] == "CUST-011" and record["amount"] == "499.00"
+        assert record["customer"] == "any-customer-id-999!" and record["amount"] == "499.00"
         assert record["status"] == "SUCCESS"
         assert record["created_at"] == record["updated_at"]
         detail_id = record["id"].lower().replace("pay-", "PAY-")
         assert (await client.get(f"/payments/{detail_id}")).status_code == 200
         assert (await client.get("/payments/PAY-FFFFFF")).status_code == 404
         invalid_amount = await client.post(
-            "/payments", json={"customer": "CUST-011", "amount": "1.001"}
+            "/payments", json={"customer": "any-customer-id-999!", "amount": "1.001"}
         )
         assert invalid_amount.status_code == 422
         assert (await client.get("/payments", params={"status": "success"})).status_code == 422
-        invalid_customer = await client.get("/payments", params={"customer": "not-a-customer"})
+        invalid_customer = await client.get("/payments", params={"customer": ""})
         assert invalid_customer.status_code == 422
         assert (await client.post("/payments/PAY-FFFFFF/refund")).status_code == 404
         assert (await client.get("/customers")).status_code == 404
