@@ -18,6 +18,8 @@ async def list_payments(request: Request) -> list[Payment]:
     except ValueError as exc:
         raise HTTPException(status_code=422, detail="Invalid payment status") from exc
     customer = request.query_params.get("customer")
+    if customer is not None and not customer.strip():
+        raise HTTPException(status_code=422, detail="Invalid fictional customer ID")
     try:
         normalized = normalize_customer(customer) if customer is not None else None
     except ValueError as exc:
