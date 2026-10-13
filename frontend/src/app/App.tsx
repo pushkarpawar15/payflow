@@ -3,7 +3,7 @@ import { Link, NavLink, Outlet, Route, Routes, useNavigate, useParams, useSearch
 import { ErrorBoundary } from 'react-error-boundary'
 import * as Dialog from '@radix-ui/react-dialog'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { Activity, Banknote, CheckCircle2, Clock3, CreditCard, Gauge, Home, LoaderCircle, Menu, RotateCcw, Settings as SettingsIcon, Users, X } from 'lucide-react'
+import { Activity, Banknote, CheckCircle2, Clock3, CreditCard, Gauge, HelpCircle, Home, LoaderCircle, Menu, RotateCcw, Settings as SettingsIcon, Users, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { ApiError } from '@/lib/apiClient'
 import { formatMoney, fromMinor, toMinor } from '@/lib/money'
@@ -19,6 +19,7 @@ const pages = {
   Details: lazy(async () => ({ default: Details })),
   Customers: lazy(async () => ({ default: Customers })),
   Settings: lazy(async () => ({ default: SettingsPage })),
+  FAQ: lazy(async () => ({ default: FAQPage })),
   Missing: lazy(async () => ({ default: Missing })),
 }
 
@@ -26,6 +27,7 @@ const nav = [
   { label: 'Overview', to: '/', icon: Home },
   { label: 'Payments', to: '/payments', icon: CreditCard },
   { label: 'Customers', to: '/customers', icon: Users },
+  { label: 'FAQ', to: '/faq', icon: HelpCircle },
 ]
 
 function useHealth() {
@@ -143,6 +145,7 @@ export function App() {
           <Route path="payments/:id" element={<pages.Details/>}/>
           <Route path="customers" element={<pages.Customers/>}/>
           <Route path="settings" element={<pages.Settings/>}/>
+          <Route path="faq" element={<pages.FAQ/>}/>
           <Route path="*" element={<pages.Missing/>}/>
         </Route>
       </Routes>
@@ -936,6 +939,56 @@ function SettingsPage() {
             </div>
           ))}
         </section>
+      </div>
+    </>
+  )
+}
+
+function FAQPage() {
+  const faqs = [
+    {
+      q: 'What is PayFlow?',
+      a: 'PayFlow is a polished, fictional payment management dashboard designed for simulating payment records, monitoring transaction volume, and analyzing customer activity in a secure sandbox environment.'
+    },
+    {
+      q: 'Does PayFlow process real money or actual card transactions?',
+      a: 'No. PayFlow operates entirely in simulation mode. No real money, credit card credentials, or bank accounts are ever processed or stored.'
+    },
+    {
+      q: 'How do I create a simulated payment?',
+      a: 'You can create a simulated payment from the Overview or Payments page by clicking the "New payment" or "Create payment" button, entering a customer ID, amount, and currency, and submitting the form.'
+    },
+    {
+      q: 'What currencies does PayFlow support?',
+      a: 'PayFlow currently supports Indian Rupees (INR), US Dollars (USD), Euros (EUR), and British Pounds (GBP) for simulated transactions.'
+    },
+    {
+      q: 'Where is payment data stored?',
+      a: 'By default, PayFlow uses an in-memory repository with fictional seed data for local development. It can also be configured to use Google Cloud Firestore for persistent storage.'
+    },
+    {
+      q: 'Can I issue refunds through PayFlow?',
+      a: 'Refund workflows and secure backend authorization are reserved for future releases. Currently, payments can be marked as refunded in simulation records or reviewed via transaction details.'
+    }
+  ]
+
+  return (
+    <>
+      <PageHeader
+        title="Frequently asked questions"
+        description="Find answers to common questions about PayFlow and simulation capabilities."
+      />
+      <div className="faq-grid" style={{ maxWidth: '1600px', margin: '0 auto', display: 'grid', gap: '16px' }}>
+        {faqs.map((item, idx) => (
+          <section className="card" key={idx} style={{ margin: 0 }}>
+            <h2 style={{ fontSize: '16px', fontWeight: 650, color: '#0f172a', marginBottom: '8px' }}>
+              {item.q}
+            </h2>
+            <p style={{ color: '#64748b', lineHeight: '1.6', margin: 0 }}>
+              {item.a}
+            </p>
+          </section>
+        ))}
       </div>
     </>
   )
