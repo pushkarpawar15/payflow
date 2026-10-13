@@ -12,7 +12,6 @@ import { selectPayments, summaries } from '@/features/payments/selectors'
 import { Currency, Payment, PaymentStatus } from '@/features/payments/types'
 import { getHealth } from '@/features/system/healthApi'
 import { useQuery } from '@tanstack/react-query'
-import { Footer } from '@/components/Footer'
 
 const pages = {
   Overview: lazy(async () => ({ default: Overview })),
@@ -119,7 +118,6 @@ function Layout() {
             <Outlet/>
           </Suspense>
         </main>
-        <Footer/>
       </div>
     </div>
   )
