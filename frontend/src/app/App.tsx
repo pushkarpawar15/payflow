@@ -118,6 +118,18 @@ function Layout() {
             <Outlet/>
           </Suspense>
         </main>
+        <footer className="footer">
+          <div className="footer-content">
+            <div className="footer-section">
+              <b>Contact Information</b>
+              <p>email : <a href="mailto:payflow@example.com">payflow@example.com</a></p>
+              <p>contact : <a href="tel:9900999909">9900999909</a></p>
+            </div>
+            <div className="footer-bottom">
+              <small>PayFlow Simulation</small>
+            </div>
+          </div>
+        </footer>
       </div>
     </div>
   )
