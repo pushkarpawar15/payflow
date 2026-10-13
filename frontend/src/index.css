@@ -342,6 +342,27 @@ button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible
   width: 100%;
 }
 
+.faq-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  gap: 18px;
+  max-width: 1600px;
+  margin: auto;
+}
+
+.faq-card h2 {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0 0 8px;
+  color: #0f172a;
+}
+
+.faq-card p {
+  color: #64748b;
+  line-height: 1.6;
+  margin: 0;
+}
+
 .metric {
   min-width: 0;
   margin: 0;
@@ -1082,6 +1103,9 @@ tbody tr {
   .card {
     padding: 17px;
     margin-bottom: 14px;
+  }
+  .faq-grid {
+    grid-template-columns: 1fr;
   }
   .detail-grid {
     grid-template-columns: 1fr;

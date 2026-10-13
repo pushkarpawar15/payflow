@@ -3,7 +3,7 @@ import { Link, NavLink, Outlet, Route, Routes, useNavigate, useParams, useSearch
 import { ErrorBoundary } from 'react-error-boundary'
 import * as Dialog from '@radix-ui/react-dialog'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { Activity, Banknote, CheckCircle2, Clock3, CreditCard, Gauge, Home, LoaderCircle, Menu, RotateCcw, Settings as SettingsIcon, Users, X } from 'lucide-react'
+import { Activity, Banknote, CheckCircle2, Clock3, CreditCard, Gauge, HelpCircle, Home, LoaderCircle, Menu, RotateCcw, Settings as SettingsIcon, Users, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { ApiError } from '@/lib/apiClient'
 import { formatMoney, fromMinor, toMinor } from '@/lib/money'
@@ -18,6 +18,7 @@ const pages = {
   Payments: lazy(async () => ({ default: Payments })),
   Details: lazy(async () => ({ default: Details })),
   Customers: lazy(async () => ({ default: Customers })),
+  FAQ: lazy(async () => ({ default: FAQPage })),
   Settings: lazy(async () => ({ default: SettingsPage })),
   Missing: lazy(async () => ({ default: Missing })),
 }
@@ -26,6 +27,7 @@ const nav = [
   { label: 'Overview', to: '/', icon: Home },
   { label: 'Payments', to: '/payments', icon: CreditCard },
   { label: 'Customers', to: '/customers', icon: Users },
+  { label: 'FAQ', to: '/faq', icon: HelpCircle },
 ]
 
 function useHealth() {
@@ -142,6 +144,7 @@ export function App() {
           <Route path="payments" element={<pages.Payments/>}/>
           <Route path="payments/:id" element={<pages.Details/>}/>
           <Route path="customers" element={<pages.Customers/>}/>
+          <Route path="faq" element={<pages.FAQ/>}/>
           <Route path="settings" element={<pages.Settings/>}/>
           <Route path="*" element={<pages.Missing/>}/>
         </Route>
@@ -880,6 +883,52 @@ function Customers() {
           </div>
         )}
       </section>
+    </>
+  )
+}
+
+const faqs = [
+  {
+    question: 'What is PayFlow?',
+    answer: 'PayFlow is a simulated payment management dashboard designed to track, simulate, and monitor fictional payment transactions.',
+  },
+  {
+    question: 'Is real money processed on PayFlow?',
+    answer: 'No. PayFlow operates entirely in simulation mode. No credit card information, bank details, or real monetary transactions are processed.',
+  },
+  {
+    question: 'How do I create a payment?',
+    answer: 'Click the "New payment" or "Create payment" button on the Overview or Payments page. Provide a customer ID (e.g., CUST-001), amount, and currency, then submit.',
+  },
+  {
+    question: 'Which currencies are supported?',
+    answer: 'PayFlow supports simulated transactions in Indian Rupee (INR), US Dollar (USD), Euro (EUR), and British Pound (GBP).',
+  },
+  {
+    question: 'Can I issue refunds for payments?',
+    answer: 'Refund processing workflows are currently reserved for a future PayFlow release. However, payments can display simulated refund statuses.',
+  },
+  {
+    question: 'How are customer details generated?',
+    answer: 'Customer metrics and aggregate volume totals are dynamically calculated from recorded payment history for each customer ID.',
+  },
+]
+
+function FAQPage() {
+  return (
+    <>
+      <PageHeader
+        title="Frequently Asked Questions"
+        description="Find answers to common questions about PayFlow features and simulation mode."
+      />
+      <div className="faq-grid">
+        {faqs.map((faq, index) => (
+          <article key={index} className="card faq-card">
+            <h2>{faq.question}</h2>
+            <p>{faq.answer}</p>
+          </article>
+        ))}
+      </div>
     </>
   )
 }
