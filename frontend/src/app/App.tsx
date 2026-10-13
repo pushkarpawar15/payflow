@@ -170,7 +170,7 @@ function ErrorState({ retry }: { retry: () => void }) {
   return (
     <section className="empty">
       <h2>Something went wrong</h2>
-      <p>We couldn’t load this information. Please try again.</p>
+      <p>We couldn't load this information. Please try again.</p>
       <button onClick={retry}>Try again</button>
     </section>
   )
@@ -230,7 +230,7 @@ function CreateDialog({ label = 'Create payment' }: { label?: string }) {
     } catch {
       amountIsPositive = false
     }
-    if (!/^\d+(?:\.\d{1,2})?$/.test(amount) || !amountIsPositive) {
+    if (!/^\\d+(?:\\.\\d{1,2})?$/.test(amount) || !amountIsPositive) {
       next.amount = 'Enter an amount greater than zero with up to two decimals.'
     }
     if (!currency) next.currency = 'Select a currency.'
