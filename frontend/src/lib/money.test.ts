@@ -15,4 +15,8 @@ describe('exact minor-unit helpers', () => {
     expect(formatMoney('36984.00')).toBe('₹36,984.00')
     expect(formatMoney('499.50', 'INR', 0)).toBe('₹500')
   })
+  it('formats THB currency correctly with two decimals and standard currency symbol', () => {
+    expect(formatMoney('1500.50', 'THB')).toContain('1,500.50')
+    expect(formatMoney('100.00', 'THB')).toContain('฿')
+  })
 })
