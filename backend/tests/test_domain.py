@@ -3,7 +3,7 @@ from datetime import datetime
 import pytest
 from pydantic import ValidationError
 
-from app.models import Payment, PaymentCreate
+from app.models import Currency, Payment, PaymentCreate
 from app.seed import build_seed_payments
 from app.time import UTC
 
@@ -51,3 +51,9 @@ def test_seed_records_have_required_shape_and_totals() -> None:
     assert sum(int(record.amount[:-3]) for record in records if record.status != "FAILED") == 36984
     assert sum(int(record.amount[:-3]) for record in records if record.status == "REFUNDED") == 4698
     assert all(record.created_at == record.updated_at for record in records)
+
+
+def test_idr_currency_is_supported() -> None:
+    payment = PaymentCreate(customer="CUST-001", amount="10000.00", currency="IDR")
+    assert payment.currency == Currency.IDR
+    assert payment.model_dump()["currency"] == "IDR"
