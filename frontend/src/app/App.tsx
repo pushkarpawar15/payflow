@@ -292,7 +292,7 @@ function CreateDialog({ label = 'Create payment' }: { label?: string }) {
 
             <label htmlFor="amount-input">Amount</label>
             <div className="amount-field">
-              <span>{currency === 'INR' ? '₹' : currency === 'USD' ? '$' : currency === 'EUR' ? '€' : '£'}</span>
+              <span>{currency === 'INR' ? '₹' : currency === 'USD' ? '$' : currency === 'EUR' ? '€' : currency === 'GBP' ? '£' : '฿'}</span>
               <input
                 id="amount-input"
                 inputMode="decimal"
@@ -317,7 +317,7 @@ function CreateDialog({ label = 'Create payment' }: { label?: string }) {
               disabled={mutation.isPending}
               onChange={e => setCurrency(e.target.value as Currency)}
             >
-              {(['INR', 'USD', 'EUR', 'GBP'] as const).map(code => (
+              {(['INR', 'USD', 'EUR', 'GBP', 'THB'] as const).map(code => (
                 <option key={code}>{code}</option>
               ))}
             </select>
