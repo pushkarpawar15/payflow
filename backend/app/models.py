@@ -21,6 +21,7 @@ class Currency(str, Enum):
     USD = "USD"
     EUR = "EUR"
     GBP = "GBP"
+    THB = "THB"
 
 
 def normalize_customer(value: str) -> str:

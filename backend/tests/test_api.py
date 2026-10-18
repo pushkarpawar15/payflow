@@ -40,3 +40,37 @@ async def test_health_list_create_details_and_no_future_routes() -> None:
         assert invalid_customer.status_code == 422
         assert (await client.post("/payments/PAY-FFFFFF/refund")).status_code == 404
         assert (await client.get("/customers")).status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_thb_currency_create_and_validation() -> None:
+    async with (
+        app.router.lifespan_context(app),
+        AsyncClient(transport=ASGITransport(app=app), base_url="http://testserver") as client,
+    ):
+        created = await client.post(
+            "/payments",
+            json={"customer": "thb-customer", "amount": "1250.50", "currency": "THB"},
+        )
+        assert created.status_code == 201
+        data = created.json()
+        assert data["currency"] == "THB"
+        assert data["amount"] == "1250.50"
+        payment_id = data["id"]
+
+        fetched = await client.get(f"/payments/{payment_id}")
+        assert fetched.status_code == 200
+        assert fetched.json()["currency"] == "THB"
+
+        created_lower = await client.post(
+            "/payments",
+            json={"customer": "thb-customer", "amount": "99.00", "currency": "thb"},
+        )
+        assert created_lower.status_code == 201
+        assert created_lower.json()["currency"] == "THB"
+
+        invalid_currency = await client.post(
+            "/payments",
+            json={"customer": "thb-customer", "amount": "99.00", "currency": "IDR"},
+        )
+        assert invalid_currency.status_code == 422

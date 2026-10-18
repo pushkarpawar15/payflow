@@ -75,3 +75,29 @@ async def test_get_returns_none_or_validates_document_data() -> None:
     snapshot.to_dict.return_value = {"amount": "corrupt"}
     with pytest.raises(RepositoryError):
         await repository.get(payment.id)
+
+
+@pytest.mark.asyncio
+async def test_thb_currency_firestore_storage() -> None:
+    repository, collection, document = make_repository()
+    base_payment = build_seed_payments()[0]
+    payment = base_payment.model_copy(update={"currency": "THB"})
+
+    await repository.create(payment)
+    record = document.create.await_args.args[0]
+    assert record["currency"] == "THB"
+
+    snapshot = MagicMock(exists=True)
+    snapshot.id = payment.id
+    snapshot.to_dict.return_value = {
+        "customer": payment.customer,
+        "amount": payment.amount,
+        "currency": "THB",
+        "status": payment.status.value,
+        "created_at": payment.created_at,
+        "updated_at": payment.updated_at,
+    }
+    collection.document.return_value.get = AsyncMock(return_value=snapshot)
+    found = await repository.get(payment.id)
+    assert found is not None
+    assert found.currency.value == "THB"
