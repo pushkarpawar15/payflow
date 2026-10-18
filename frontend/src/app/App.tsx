@@ -3,7 +3,7 @@ import { Link, NavLink, Outlet, Route, Routes, useNavigate, useParams, useSearch
 import { ErrorBoundary } from 'react-error-boundary'
 import * as Dialog from '@radix-ui/react-dialog'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { Activity, Banknote, CheckCircle2, Clock3, CreditCard, Gauge, Home, LoaderCircle, Menu, RotateCcw, Settings as SettingsIcon, Users, X } from 'lucide-react'
+import { Activity, Banknote, CheckCircle2, Clock3, CreditCard, Gauge, HelpCircle, Home, LoaderCircle, Menu, RotateCcw, Settings as SettingsIcon, Users, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { ApiError } from '@/lib/apiClient'
 import { formatMoney, fromMinor, toMinor } from '@/lib/money'
@@ -19,6 +19,7 @@ const pages = {
   Details: lazy(async () => ({ default: Details })),
   Customers: lazy(async () => ({ default: Customers })),
   Settings: lazy(async () => ({ default: SettingsPage })),
+  FAQ: lazy(async () => ({ default: FAQPage })),
   Missing: lazy(async () => ({ default: Missing })),
 }
 
@@ -26,6 +27,7 @@ const nav = [
   { label: 'Overview', to: '/', icon: Home },
   { label: 'Payments', to: '/payments', icon: CreditCard },
   { label: 'Customers', to: '/customers', icon: Users },
+  { label: 'FAQ', to: '/faq', icon: HelpCircle },
 ]
 
 function useHealth() {
@@ -108,7 +110,7 @@ function Layout() {
                 <item.icon size={18}/>
                 {item.label}
               </NavLink>
-            ))}
+            )) }
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog.Root>
@@ -143,6 +145,7 @@ export function App() {
           <Route path="payments/:id" element={<pages.Details/>}/>
           <Route path="customers" element={<pages.Customers/>}/>
           <Route path="settings" element={<pages.Settings/>}/>
+          <Route path="faq" element={<pages.FAQ/>}/>
           <Route path="*" element={<pages.Missing/>}/>
         </Route>
       </Routes>
@@ -937,6 +940,87 @@ function SettingsPage() {
           ))}
         </section>
       </div>
+    </>
+  )
+}
+
+const faqs = [
+  {
+    question: 'What is payflow ?',
+    answer: 'PayFlow is a simulated payment management dashboard designed for testing, monitoring, and visualizing fictional payment transactions without moving real money or interacting with actual financial networks.'
+  },
+  {
+    question: 'Are actual financial transactions processed?',
+    answer: 'No. PayFlow operates entirely in simulation mode. No real money, bank accounts, or payment card credentials are collected, stored, or processed.'
+  },
+  {
+    question: 'How do I create a simulated payment?',
+    answer: 'You can create a simulated payment by clicking the "New payment" or "Create payment" button anywhere in the dashboard, entering a customer ID, amount, and currency, and submitting the form.'
+  },
+  {
+    question: 'What currencies are supported?',
+    answer: 'PayFlow currently supports Indian Rupees (INR), US Dollars (USD), Euros (EUR), and British Pounds (GBP), with INR serving as the primary currency for volume calculations.'
+  },
+  {
+    question: 'How is data stored?',
+    answer: 'By default, PayFlow uses an in-memory repository with fictional seed data for local development. For production-like environments, it supports persistent backends such as Google Cloud Firestore.'
+  },
+  {
+    question: 'Can I issue refunds?',
+    answer: 'Refund workflows and processing are reserved for future releases. Currently, recorded payments can be viewed and monitored, but refund actions are simulated.'
+  }
+]
+
+function FAQPage() {
+  const [search, setSearch] = useState('')
+  const filteredFaqs = faqs.filter(
+    item =>
+      item.question.toLowerCase().includes(search.toLowerCase()) ||
+      item.answer.toLowerCase().includes(search.toLowerCase())
+  )
+
+  return (
+    <>
+      <PageHeader
+        title="Frequently asked questions"
+        description="Find answers to common questions about PayFlow and its features."
+      />
+      <section className="card">
+        <div className="filters" style={{ marginBottom: '24px' }}>
+          <input
+            placeholder="Search questions or answers..."
+            aria-label="Search FAQs"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+          <span>{filteredFaqs.length} questions</span>
+        </div>
+        {!filteredFaqs.length ? (
+          <div className="empty">
+            <h2>No matching questions</h2>
+            <p>Try searching for something else or clear your search.</p>
+          </div>
+        ) : (
+          <div className="faq-list" style={{ display: 'grid', gap: '20px' }}>
+            {filteredFaqs.map((faq, index) => (
+              <div
+                key={index}
+                style={{
+                  paddingBottom: index < filteredFaqs.length - 1 ? '20px' : '0',
+                  borderBottom: index < filteredFaqs.length - 1 ? '1px solid #eef2f6' : '0'
+                }}
+              >
+                <h3 style={{ fontSize: '15px', fontWeight: 650, margin: '0 0 6px', color: '#0f172a' }}>
+                  {faq.question}
+                </h3>
+                <p style={{ margin: 0, color: '#64748b', lineHeight: '1.6' }}>
+                  {'->'} {faq.answer}
+                </p>
+              </div>
+            ))}
+          </div>
+        )}
+      </section>
     </>
   )
 }
