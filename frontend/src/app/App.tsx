@@ -3,7 +3,7 @@ import { Link, NavLink, Outlet, Route, Routes, useNavigate, useParams, useSearch
 import { ErrorBoundary } from 'react-error-boundary'
 import * as Dialog from '@radix-ui/react-dialog'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
-import { Activity, Banknote, CheckCircle2, Clock3, CreditCard, Gauge, HelpCircle, Home, LoaderCircle, Menu, RotateCcw, Settings as SettingsIcon, Users, X } from 'lucide-react'
+import { Activity, Banknote, CheckCircle2, Clock3, CreditCard, Gauge, HelpCircle, Home, Info, LoaderCircle, Menu, RotateCcw, Settings as SettingsIcon, Users, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { ApiError } from '@/lib/apiClient'
 import { formatMoney, fromMinor, toMinor } from '@/lib/money'
@@ -20,6 +20,7 @@ const pages = {
   Customers: lazy(async () => ({ default: Customers })),
   Settings: lazy(async () => ({ default: SettingsPage })),
   FAQ: lazy(async () => ({ default: FAQPage })),
+  About: lazy(async () => ({ default: AboutPage })),
   Missing: lazy(async () => ({ default: Missing })),
 }
 
@@ -28,6 +29,7 @@ const nav = [
   { label: 'Payments', to: '/payments', icon: CreditCard },
   { label: 'Customers', to: '/customers', icon: Users },
   { label: 'FAQ', to: '/faq', icon: HelpCircle },
+  { label: 'About Us', to: '/about', icon: Info },
 ]
 
 function useHealth() {
@@ -146,6 +148,8 @@ export function App() {
           <Route path="customers" element={<pages.Customers/>}/>
           <Route path="settings" element={<pages.Settings/>}/>
           <Route path="faq" element={<pages.FAQ/>}/>
+          <Route path="about" element={<pages.About/>}/>
+          <Route path="about-us" element={<pages.About/>}/>
           <Route path="*" element={<pages.Missing/>}/>
         </Route>
       </Routes>
@@ -1021,6 +1025,100 @@ function FAQPage() {
           </div>
         )}
       </section>
+    </>
+  )
+}
+
+const contributors = [
+  {
+    name: 'Pushkar Pawar',
+    role: 'Core Contributor',
+    bio: 'Lead engineer focused on architecture, frontend experience, and platform scalability.',
+  },
+  {
+    name: 'Yashswi chaturvedi',
+    role: 'Core Contributor',
+    bio: 'Software engineer working on UI components, design systems, and payment workflows.',
+  },
+]
+
+function AboutPage() {
+  return (
+    <>
+      <PageHeader
+        title="About Us"
+        description="Learn more about PayFlow, our mission, and the contributors behind the project."
+      />
+      <div className="settings-grid" style={{ marginBottom: '18px' }}>
+        <section className="card">
+          <h2>About PayFlow</h2>
+          <p>
+            PayFlow is an intuitive, modern payment management dashboard built for visualizing, testing, and monitoring simulated payment transactions.
+          </p>
+          <div className="setting-row" style={{ marginTop: '14px' }}>
+            <span>Mission</span>
+            <b style={{ textAlign: 'right', maxWidth: '300px' }}>Providing seamless simulation tools for modern financial software systems.</b>
+          </div>
+          <div className="setting-row">
+            <span>Platform Status</span>
+            <b className="green">Fully Operational</b>
+          </div>
+          <div className="setting-row">
+            <span>Version</span>
+            <b>1.0.0</b>
+          </div>
+        </section>
+        <section className="card">
+          <h2>Our Core Values</h2>
+          <p>Building reliable, accessible, and high-performance financial interfaces.</p>
+          <h3 style={{ fontSize: '14px', margin: '16px 0 6px' }}>Simplicity & Security</h3>
+          <p>Safely testing payment flows without risking live financial credentials or actual money movement.</p>
+          <h3 style={{ fontSize: '14px', margin: '16px 0 6px' }}>Developer Experience</h3>
+          <p>Streamlined dashboards, fast response times, and clear data metrics designed for modern teams.</p>
+        </section>
+        <section className="card full-card">
+          <h2>Contributors</h2>
+          <p>Meet the team members contributing to PayFlow development.</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginTop: '20px' }}>
+            {contributors.map((person) => (
+              <div
+                key={person.name}
+                style={{
+                  padding: '16px',
+                  borderRadius: '12px',
+                  border: '1px solid #e2e8f0',
+                  background: '#f8fafc',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
+                  <div
+                    style={{
+                      width: '40px',
+                      height: '40px',
+                      borderRadius: '50%',
+                      background: '#0f172a',
+                      color: '#ffffff',
+                      display: 'grid',
+                      placeItems: 'center',
+                      fontWeight: 600,
+                      fontSize: '15px',
+                    }}
+                  >
+                    {person.name.split(' ').map(n => n[0]).join('')}
+                  </div>
+                  <div>
+                    <b style={{ display: 'block', fontSize: '15px', color: '#0f172a' }}>{person.name}</b>
+                    <span style={{ fontSize: '12px', color: '#64748b' }}>{person.role}</span>
+                  </div>
+                </div>
+                <p style={{ margin: 0, fontSize: '13px', color: '#475569', lineHeight: '1.5' }}>
+                  {person.bio}
+                </p>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
     </>
   )
 }
