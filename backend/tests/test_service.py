@@ -3,7 +3,7 @@ from datetime import datetime
 import pytest
 
 from app.exceptions import DuplicatePaymentError, PaymentNotFoundError
-from app.models import Payment, PaymentCreate
+from app.models import Currency, Payment, PaymentCreate
 from app.repositories.memory import MemoryPaymentRepository
 from app.services.payments import PaymentService
 from app.time import UTC
@@ -50,3 +50,22 @@ async def test_missing_payment_raises_domain_error() -> None:
     service = PaymentService(MemoryPaymentRepository())
     with pytest.raises(PaymentNotFoundError):
         await service.get("pay-aabbcc")
+
+
+@pytest.mark.asyncio
+async def test_create_and_get_payment_with_thb_currency() -> None:
+    repository = MemoryPaymentRepository()
+    service = PaymentService(
+        repository,
+        id_generator=lambda: "PAY-000001",
+        clock=lambda: datetime(2026, 1, 1, tzinfo=UTC),
+    )
+    payment = await service.create(
+        PaymentCreate(customer="CUST-THB", amount="3500.00", currency=Currency.THB)
+    )
+    assert payment.currency == Currency.THB
+    assert payment.amount == "3500.00"
+    retrieved = await service.get("PAY-000001")
+    assert retrieved == payment
+    listed = await service.list_payments()
+    assert payment in listed

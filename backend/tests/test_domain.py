@@ -3,7 +3,7 @@ from datetime import datetime
 import pytest
 from pydantic import ValidationError
 
-from app.models import Payment, PaymentCreate
+from app.models import Currency, Payment, PaymentCreate
 from app.seed import build_seed_payments
 from app.time import UTC
 
@@ -51,3 +51,35 @@ def test_seed_records_have_required_shape_and_totals() -> None:
     assert sum(int(record.amount[:-3]) for record in records if record.status != "FAILED") == 36984
     assert sum(int(record.amount[:-3]) for record in records if record.status == "REFUNDED") == 4698
     assert all(record.created_at == record.updated_at for record in records)
+
+
+def test_currency_enum_includes_thb() -> None:
+    assert Currency.THB.value == "THB"
+    assert set(Currency) == {
+        Currency.INR,
+        Currency.USD,
+        Currency.EUR,
+        Currency.GBP,
+        Currency.THB,
+    }
+
+
+def test_payment_create_accepts_thb() -> None:
+    payload = PaymentCreate(customer="CUST-001", amount="100.00", currency="THB")
+    assert payload.currency == Currency.THB
+
+    payload_lower = PaymentCreate(customer="CUST-001", amount="100.00", currency="thb")
+    assert payload_lower.currency == Currency.THB
+
+
+def test_payment_create_rejects_unsupported_currency() -> None:
+    with pytest.raises(ValidationError):
+        PaymentCreate(customer="CUST-001", amount="100.00", currency="IDR")
+
+
+def test_thb_preserves_two_decimal_amount_validation() -> None:
+    valid = PaymentCreate(customer="CUST-001", amount="250.50", currency=Currency.THB)
+    assert valid.amount == "250.50"
+
+    with pytest.raises(ValidationError):
+        PaymentCreate(customer="CUST-001", amount="250.555", currency=Currency.THB)
