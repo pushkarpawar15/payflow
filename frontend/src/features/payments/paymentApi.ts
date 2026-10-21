@@ -10,7 +10,7 @@ function parsePayment(value: unknown): Payment {
   const status = data.status
   const createdAt = data.created_at ?? data.createdAt
   const updatedAt = data.updated_at ?? data.updatedAt
-  if (typeof data.id !== 'string' || !data.id || typeof data.customer !== 'string' || !data.customer || (typeof amount !== 'string' && typeof amount !== 'number') || typeof currency !== 'string' || !['INR', 'USD', 'EUR', 'GBP'].includes(currency) || typeof status !== 'string' || !['SUCCESS', 'FAILED', 'REFUNDED'].includes(status) || typeof createdAt !== 'string' || !Number.isFinite(Date.parse(createdAt)) || typeof updatedAt !== 'string' || !Number.isFinite(Date.parse(updatedAt))) throw new Error('Malformed payment')
+  if (typeof data.id !== 'string' || !data.id || typeof data.customer !== 'string' || !data.customer || (typeof amount !== 'string' && typeof amount !== 'number') || typeof currency !== 'string' || !['INR', 'USD', 'EUR', 'GBP', 'IDR'].includes(currency) || typeof status !== 'string' || !['SUCCESS', 'FAILED', 'REFUNDED'].includes(status) || typeof createdAt !== 'string' || !Number.isFinite(Date.parse(createdAt)) || typeof updatedAt !== 'string' || !Number.isFinite(Date.parse(updatedAt))) throw new Error('Malformed payment')
   let normalizedAmount: string
   try { normalizedAmount = fromMinor(toMinor(String(amount))) } catch { throw new Error('Malformed payment') }
   return { id: data.id, customer: data.customer, amount: normalizedAmount, currency: currency as Currency, status: status as PaymentStatus, createdAt, updatedAt }
