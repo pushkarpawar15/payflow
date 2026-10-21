@@ -299,7 +299,7 @@ function CreateDialog({ label = 'Create payment' }: { label?: string }) {
 
             <label htmlFor="amount-input">Amount</label>
             <div className="amount-field">
-              <span>{currency === 'INR' ? '₹' : currency === 'USD' ? '$' : currency === 'EUR' ? '€' : '£'}</span>
+              <span>{currency === 'INR' ? '₹' : currency === 'USD' ? '$' : currency === 'EUR' ? '€' : currency === 'GBP' ? '£' : 'Rp'}</span>
               <input
                 id="amount-input"
                 inputMode="decimal"
@@ -324,7 +324,7 @@ function CreateDialog({ label = 'Create payment' }: { label?: string }) {
               disabled={mutation.isPending}
               onChange={e => setCurrency(e.target.value as Currency)}
             >
-              {(['INR', 'USD', 'EUR', 'GBP'] as const).map(code => (
+              {(['INR', 'USD', 'EUR', 'GBP', 'IDR'] as const).map(code => (
                 <option key={code}>{code}</option>
               ))}
             </select>
@@ -662,14 +662,16 @@ function Payments() {
               <caption className="sr-only">Payments</caption>
               <thead>
                 <tr>
-                  {([
-                    ['Payment ID', 'id'],
-                    ['Customer', 'customer'],
-                    ['Amount', 'amount'],
-                    ['Currency', 'currency'],
-                    ['Status', 'status'],
-                    ['Created', 'createdAt'],
-                  ] as const).map(([label, key]) => (
+                  {(
+                    [
+                      ['Payment ID', 'id'],
+                      ['Customer', 'customer'],
+                      ['Amount', 'amount'],
+                      ['Currency', 'currency'],
+                      ['Status', 'status'],
+                      ['Created', 'createdAt'],
+                    ] as const
+                  ).map(([label, key]) => (
                     <th key={key}>
                       <button
                         className="sort-button"
@@ -764,15 +766,17 @@ function Details() {
             <h2>Payment information</h2>
             <p>Core details recorded for this simulated payment.</p>
             <dl className="details-list">
-              {([
-                ['Payment ID', p.id],
-                ['Customer', p.customer],
-                ['Amount', formatMoney(p.amount, p.currency)],
-                ['Currency', p.currency],
-                ['Status', statusLabel(p.status)],
-                ['Created', dateFull(p.createdAt)],
-                ['Updated', dateFull(p.updatedAt)],
-              ] as const).map(([key, value]) => (
+              {(
+                [
+                  ['Payment ID', p.id],
+                  ['Customer', p.customer],
+                  ['Amount', formatMoney(p.amount, p.currency)],
+                  ['Currency', p.currency],
+                  ['Status', statusLabel(p.status)],
+                  ['Created', dateFull(p.createdAt)],
+                  ['Updated', dateFull(p.updatedAt)],
+                ] as const
+              ).map(([key, value]) => (
                 <div key={key}><dt>{key}</dt><dd>{value}</dd></div>
               ))}
             </dl>
@@ -930,10 +934,12 @@ function SettingsPage() {
         <section className="card full-card">
           <h2>Coming later</h2>
           <p>These clean extension points are ready for future NEXUS tasks.</p>
-          {([
-            ['Secure refunds', 'Refund workflows and backend authorization are not implemented yet.'],
-            ['CSV export', 'Export controls remain disabled until a future release.'],
-          ] as const).map(([title, desc]) => (
+          {(
+            [
+              ['Secure refunds', 'Refund workflows and backend authorization are not implemented yet.'],
+              ['CSV export', 'Export controls remain disabled until a future release.'],
+            ] as const
+          ).map(([title, desc]) => (
             <div className="coming" key={title}>
               <div>
                 <b>{title}</b>
