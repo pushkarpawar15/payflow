@@ -401,6 +401,8 @@ function Overview() {
     .filter(p => new Date(p.createdAt) >= chartStart && new Date(p.createdAt) < tomorrow)
     .reduce((sum, p) => sum + toMinor(p.amount), 0n)
   const countOk = payments.filter(p => p.status !== 'FAILED').length
+  const atvCount = inr.length
+  const atv = atvCount > 0 ? total / BigInt(atvCount) : 0n
   const chartData = chart(payments, days)
 
   return (
@@ -429,6 +431,12 @@ function Overview() {
           label="Success rate"
           value={`${(countOk / payments.length * 100).toFixed(1)}%`}
           helper="successful processing"
+        />
+        <Metric
+          icon={<Banknote/>}
+          label="Average transaction value"
+          value={formatMoney(fromMinor(atv), 'INR', 2)}
+          helper="mean INR per non-failed payment"
         />
         <Metric
           icon={<RotateCcw/>}
